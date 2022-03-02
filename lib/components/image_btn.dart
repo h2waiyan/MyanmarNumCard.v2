@@ -18,16 +18,13 @@ class ImageButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        var message = "";
+        var message = "Your answer is wrong.";
         var msgColor = Colors.red;
         var score = 0;
         if (correctAns == val) {
           message = "Your answer is correct.";
           msgColor = Colors.green;
           score += 10;
-        } else {
-          message = "Your answer is incorrect.";
-          msgColor = Colors.red;
         }
 
         onTap(score);
