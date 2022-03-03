@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'components/image_btn.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,13 +17,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: SelectNumber(),
+      home: const SelectNumber(),
     );
   }
 }
 
 class SelectNumber extends StatefulWidget {
-  SelectNumber({Key? key}) : super(key: key);
+  const SelectNumber({Key? key}) : super(key: key);
 
   @override
   State<SelectNumber> createState() => _SelectNumberState();
@@ -30,10 +31,30 @@ class SelectNumber extends StatefulWidget {
 
 class _SelectNumberState extends State<SelectNumber> {
   List<int> numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  SharedPreferences? prefs;
 
   int correctAns = 0;
   int score = 0;
   int ans = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    loadScore();
+  }
+
+  saveScore(int newScore) async {
+    prefs = await SharedPreferences.getInstance();
+    await prefs!.setInt("score", newScore);
+  }
+
+  loadScore() async {
+    prefs = await SharedPreferences.getInstance();
+    var myscore = prefs!.getInt("score")!;
+    setState(() {
+      score = myscore;
+    });
+  }
 
   Widget imageList(List<int> images) => Column(
       children: images
@@ -43,6 +64,7 @@ class _SelectNumberState extends State<SelectNumber> {
               onTap: (ans) {
                 setState(() {
                   score += ans;
+                  saveScore(score);
                 });
               }))
           .toList());
